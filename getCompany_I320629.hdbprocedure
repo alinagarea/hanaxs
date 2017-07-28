@@ -1,0 +1,27 @@
+PROCEDURE "SAP_PLC"."sap.plc.trainning.I320629::getCompany_I320629" (
+    IN companyDescription NVARCHAR(60),
+    OUT rowCount integer,
+    OUT companies "SAP_PLC"."sap.plc.trainning.I320629::I320629.t_company_I320629" default empty
+)
+   LANGUAGE SQLSCRIPT
+   SQL SECURITY INVOKER
+   --DEFAULT SCHEMA <default_schema_name>
+   READS SQL DATA AS
+BEGIN
+    DECLARE filter NVARCHAR(5000);
+   /*************************************
+       Write your procedure logic 
+   *************************************/
+    SELECT 
+       count(*) into rowCount /*  count rows */
+        /*  * "select all" */
+      FROM 
+        "SAP_PLC"."sap.plc.trainning.I320629::I320629.t_company_I320629";
+    companies1 = SELECT *
+    FROM "SAP_PLC"."sap.plc.trainning.I320629::I320629.t_company_I320629";
+    /*WHERE COMPANY_DESCRIPTION = :companyDescription;*/
+    /*WHERE COMPANY_DESCRIPTION like '%' || :companyDescription || '%';*/
+    select 'COMPANY_DESCRIPTION like ''%:|%''' into filter from DUMMY;           
+    companies = APPLY_FILTER(:companies1, :filter);
+
+END;
